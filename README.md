@@ -80,7 +80,7 @@ Solution Requirements:
 
 ## Outside Resources Used
 
-None
+All source code written before March 24, 2024 was provided by David Barnes.
 
 ## Known Problems, Issues, And/Or Errors in the Program
 
