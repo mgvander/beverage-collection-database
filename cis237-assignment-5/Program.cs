@@ -1,4 +1,10 @@
-﻿using System;
+﻿/// Author: Michael VanderMyde
+/// Course: CIS-237
+/// Assignment 5
+
+using cis237_assignment_5.Models;
+using Microsoft.IdentityModel.Tokens;
+using System;
 
 namespace cis237_assignment_5
 {
@@ -6,25 +12,28 @@ namespace cis237_assignment_5
     {
         static void Main(string[] args)
         {
-            // Set Console Window Size
-            Console.BufferHeight = Int16.MaxValue - 1;
-            Console.WindowHeight = 40;
-            Console.WindowWidth = 120;
+            //// Set Console Window Size
+            //Console.BufferHeight = Int16.MaxValue - 1;
+            //Console.WindowHeight = 40;
+            Console.WindowWidth = 151;            
 
-            // Set a constant for the size of the collection
-            const int beverageCollectionSize = 4000;
+            //// Set a constant for the size of the collection
+            //const int beverageCollectionSize = 4000;
 
-            // Set a constant for the path to the CSV File
-            const string pathToCSVFile = "../../../../datafiles/beverage_list.csv";
+            //// Number to exit the program
+            //const int exitInteger = 6;
+
+            //// Set a constant for the path to the CSV File
+            //const string pathToCSVFile = "../../../../datafiles/beverage_list.csv";
 
             // Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
-
+            
             // Create an instance of the BeverageCollection class
-            BeverageCollection beverageCollection = new BeverageCollection(beverageCollectionSize);
+            BeverageCollection beverageCollection = new BeverageCollection();
 
-            // Create an instance of the CSVProcessor class
-            CSVProcessor csvProcessor = new CSVProcessor();
+            //// Create an instance of the CSVProcessor class
+            //CSVProcessor csvProcessor = new CSVProcessor();
 
             // Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -33,79 +42,146 @@ namespace cis237_assignment_5
             // This is the 'primer' run of displaying and getting.
             int choice = userInterface.DisplayMenuAndGetResponse();
 
-            // While the choice is not exit program
-            while (choice != 5)
+            // Loop while the choice is not exit program
+            while (choice != userInterface.MenuExitNumber)
             {
                 switch (choice)
                 {
+                    // Display all items
                     case 1:
-                        // Load the CSV File
-                        bool success = csvProcessor.ImportCSV(beverageCollection, pathToCSVFile);
-                        if (success)
-                        {
-                            // Display Success Message
-                            userInterface.DisplayImportSuccess();
-                        }
-                        else
-                        {
-                            // Display Fail Message
-                            userInterface.DisplayImportError();
-                        }
-                        break;
+                        //// Load the CSV File
+                        //bool success = csvProcessor.ImportCSV(beverageCollection, pathToCSVFile);
+                        //if (success)
+                        //{
+                        //    // Display Success Message
+                        //    userInterface.DisplayImportSuccess();
+                        //}
+                        //else
+                        //{
+                        //    // Display Fail Message
+                        //    userInterface.DisplayImportError();
+                        //}
 
-                    case 2:
-                        // Print Entire List Of Items
+                        //// Print Entire List Of Items
+                        //string allItemsString = beverageCollection.ToString();
+
+                        //if (!String.IsNullOrWhiteSpace(allItemsString))
+                        //{
+                        //    // Display all of the items
+                        //    userInterface.DisplayAllItems(allItemsString);
+                        //}
+                        //else
+                        //{
+                        //    // Display error message for all items
+                        //    userInterface.DisplayAllItemsError();
+                        //}
+
+                        // Create a string of the full item list
                         string allItemsString = beverageCollection.ToString();
+
+                        // Check the list of items is not null and is more than white spaces
                         if (!String.IsNullOrWhiteSpace(allItemsString))
                         {
                             // Display all of the items
                             userInterface.DisplayAllItems(allItemsString);
+
                         }
                         else
                         {
                             // Display error message for all items
                             userInterface.DisplayAllItemsError();
+
                         }
+
                         break;
 
-                    case 3:
-                        // Search For An Item
-                        string searchQuery = userInterface.GetSearchQuery();
-                        string itemInformation = beverageCollection.FindById(searchQuery);
-                        if (itemInformation != null)
+                    // Find an item from the list
+                    case 2:
+                        //// Search For An Item
+                        //string searchQuery = userInterface.GetSearchQuery();
+                        //string itemInformation = beverageCollection.FindById(searchQueryString);
+                        //if (itemInformationString != null)
+                        //{
+                        //    userInterface.DisplayItemFound(itemInformationString);
+                        //}
+                        //else
+                        //{
+                        //    userInterface.DisplayItemFoundError();
+                        //}
+
+                        // Get the Id the user wants
+                        string searchQueryString = userInterface.GetSearchQuery();
+
+                        // Get item information
+                        string itemInformationString = beverageCollection.FindById(searchQueryString);
+
+                        // Check that the item was found
+                        if (itemInformationString != null)
                         {
-                            userInterface.DisplayItemFound(itemInformation);
+                            // Diaplay the found item
+                            userInterface.DisplayItemFound(itemInformationString);
+
                         }
+                        // Item was not found
                         else
                         {
+                            // Display item not not found error
                             userInterface.DisplayItemFoundError();
+
                         }
+
                         break;
 
-                    case 4:
-                        // Add A New Item To The List
+                    // Add an item to the list
+                    case 3:
+                        // Get new item information and set it as elements in an array of strings
                         string[] newItemInformation = userInterface.GetNewItemInformation();
+
+                        // Check that the item does not already exist in the database
                         if (beverageCollection.FindById(newItemInformation[0]) == null)
                         {
-                            beverageCollection.AddNewItem(
-                                newItemInformation[0],
-                                newItemInformation[1],
-                                newItemInformation[2],
-                                decimal.Parse(newItemInformation[3]),
-                                (newItemInformation[4] == "True")
-                            );
-                            userInterface.DisplayAddWineItemSuccess();
+                            // Add the new item to the database
+                            beverageCollection.AddNewItem(newItemInformation[0],
+                                                          newItemInformation[1],
+                                                          newItemInformation[2],
+                                                          decimal.Parse(newItemInformation[3]),
+                                                          (newItemInformation[4] == "True"));
+
+                            // Display success message
+                            userInterface.DisplayAddBeverageSuccess();
+
                         }
+                        // The item's id was found to already exist in the database
                         else
                         {
+                            // Display item already exists message
                             userInterface.DisplayItemAlreadyExistsError();
+
                         }
+
                         break;
+
+                    // Edit an item in the list
+                    case 4:
+                        
+
+                        break;
+
+                    // Delete an item from the list
+                    case 5:
+
+
+                        break;
+
                 }
 
                 // Get the new choice of what to do from the user
                 choice = userInterface.DisplayMenuAndGetResponse();
+
             }
+
         }
+
     }
+
 }

@@ -1,32 +1,48 @@
-﻿using System;
+﻿/// Author: Michael VanderMyde
+/// Course: CIS-237
+/// Assignment 5
+
+using cis237_assignment_5.Models;
+using System;
 
 namespace cis237_assignment_5
 {
     class BeverageCollection
     {
         // Private Variables
-        private Beverage[] beverages;
-        private int beverageLength;
+        //private Beverage[] beverages;
+        //private int beverageLength;
 
-        // Constructor. Must pass the size of the collection.
-        public BeverageCollection(int size)
-        {
-            this.beverages = new Beverage[size];
-            this.beverageLength = 0;
-        }
+        private BeverageContext beverageContext = new BeverageContext();
+
+        //// Constructor. Must pass the size of the collection.
+        //public BeverageCollection(int size)
+        //{
+        //    this.beverages = new Beverage[size];
+        //    this.beverageLength = 0;
+        //}
 
         // Add a new item to the collection
-        public void AddNewItem(
-            string id,
-            string name,
-            string pack,
-            decimal price,
-            bool active
-        )
+        public void AddNewItem(string passId,
+                               string passName,
+                               string passPack,
+                               decimal passPrice,
+                               bool passActive)
         {
             // Add a new Beverage to the collection. Increase the Length variable.
-            beverages[beverageLength] = new Beverage(id, name, pack, price, active);
-            beverageLength++;
+            //beverages[beverageLength] = new Beverage(id, name, pack, price, active);
+            //beverageLength++;
+
+            // Make a new instance of a beverage
+            Beverage newBeverage = new Beverage();
+
+            // Set Id, name, packing, price, and activity
+            newBeverage.Id = passId;
+            newBeverage.Name = passName;
+            newBeverage.Pack = passPack;
+            newBeverage.Price = passPrice;
+            newBeverage.Active = passActive;
+
         }
 
         // ToString override method to convert the collection to a string
@@ -35,42 +51,93 @@ namespace cis237_assignment_5
             // Declare a return string
             string returnString = "";
 
-            // Loop through all of the beverages
-            foreach (Beverage beverage in beverages)
+            //// Loop through all of the beverages
+            //foreach (Beverage beverage in beverages)
+            //{
+            //    // If the current beverage is not null, concat it to the return string
+            //    if (beverage != null)
+            //    {
+            //        returnString += beverage.ToString() + Environment.NewLine;
+            //    }
+            //}
+
+            // Loop through each beverage in the database
+            foreach (Beverage beverage in beverageContext.Beverages)
             {
-                // If the current beverage is not null, concat it to the return string
+                // If the current beverage is not null, add it to the return string
                 if (beverage != null)
                 {
-                    returnString += beverage.ToString() + Environment.NewLine;
-                }
+                    // Accumulate the current beverage to the return string
+                    returnString += this.BeverageToString(beverage) + Environment.NewLine;
+
+                }                
+
             }
+
             // Return the return string
             return returnString;
         }
 
         // Find an item by it's Id
-        public string FindById(string id)
+        public string FindById(string passId)
         {
             // Declare return string for the possible found item
             string returnString = null;
 
-            // For each Beverage in beverages
-            foreach (Beverage beverage in beverages)
+            //// For each Beverage in beverages
+            //foreach (Beverage beverage in beverages)
+            //{
+            //    // If the beverage is not null
+            //    if (beverage != null)
+            //    {
+            //        // If the beverage Id is the same as the search Id
+            //        if (beverage.Id == id)
+            //        {
+            //            // Set the return string to the result
+            //            // of the beverage's ToString method.
+            //            returnString = beverage.ToString();
+            //        }
+            //    }
+            //}
+
+            // Get the beverage with the passed in Id or return null if not found
+            Beverage beverage = beverageContext.Beverages.Find(passId);
+
+            // Check that the beverage was found
+            if (beverage != null)
             {
-                // If the beverage is not null
-                if (beverage != null)
-                {
-                    // If the beverage Id is the same as the search Id
-                    if (beverage.Id == id)
-                    {
-                        // Set the return string to the result
-                        // of the beverage's ToString method.
-                        returnString = beverage.ToString();
-                    }
-                }
-            }
+                // Format the beverage in string form
+                returnString = BeverageToString(beverage);
+
+            }            
+
             // Return the returnString
             return returnString;
+
         }
+
+        /// <summary>
+        /// Format a beverage into concatenated line of traits
+        /// </summary>
+        /// <param name="passBeverage"> Beverage with an Id, Name, Packing, Price, and Activity </param>
+        /// <returns> Concatenated string </returns>
+        private string BeverageToString(Beverage passBeverage)
+        {
+            // Concatenate the data points of a beverage into a line
+            //return passBeverage.Id.PadRight(9) + 
+            //       passBeverage.Name.PadRight(57) + 
+            //       passBeverage.Pack.PadRight(18) + 
+            //       passBeverage.Price.ToString("c").PadLeft(7) + 
+            //       passBeverage.Active.ToString().PadRight(6) + Environment.NewLine;
+
+            return passBeverage.Id.PadRight(9) +
+                   passBeverage.Name +
+                   passBeverage.Pack +
+                   passBeverage.Price.ToString("c") + "  " +
+                   passBeverage.Active.ToString() + Environment.NewLine;
+
+        }
+
     }
+
 }

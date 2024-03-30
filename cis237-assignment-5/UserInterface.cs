@@ -1,10 +1,20 @@
-﻿using System;
+﻿/// Author: Michael VanderMyde
+/// Course: CIS-237
+/// Assignment 5
+
+using System;
 
 namespace cis237_assignment_5
 {
     class UserInterface
     {
-        const int MAX_MENU_CHOICES = 5;
+        private const int MAX_MENU_CHOICES = 6;
+
+        /********************************************************************************
+         * Properties
+         * *****************************************************************************/
+        // The integer menu choice that ends the program
+        public int MenuExitNumber { get { return MAX_MENU_CHOICES; } }
 
         /*
         |----------------------------------------------------------------------
@@ -53,7 +63,7 @@ namespace cis237_assignment_5
         public string GetSearchQuery()
         {
             Console.WriteLine();
-            Console.WriteLine("What would you like to search for?");
+            Console.WriteLine("What Id would you like to search for?");
             Console.Write("> ");
             return Console.ReadLine();
         }
@@ -99,6 +109,7 @@ namespace cis237_assignment_5
             Console.WriteLine(this.GetItemHeader());
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(allItemsOutput);
+
         }
 
         // Display All Items Error
@@ -132,8 +143,8 @@ namespace cis237_assignment_5
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        // Display Add Wine Item Success
-        public void DisplayAddWineItemSuccess()
+        // Display Add Beverage Item Success
+        public void DisplayAddBeverageSuccess()
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
@@ -162,11 +173,12 @@ namespace cis237_assignment_5
             Console.WriteLine();
             Console.WriteLine("What would you like to do?");
             Console.WriteLine();
-            Console.WriteLine("1. Load Wine List From CSV");
-            Console.WriteLine("2. Print The Entire List Of Items");
-            Console.WriteLine("3. Search For An Item");
-            Console.WriteLine("4. Add New Item To The List");
-            Console.WriteLine("5. Exit Program");
+            Console.WriteLine("1. Print the Entire List of Items");
+            Console.WriteLine("2. Search for an Item");
+            Console.WriteLine("3. Add New Item to the List");
+            Console.WriteLine("4. Edit an Item in the List");
+            Console.WriteLine("5. Delete an Item in the List");
+            Console.WriteLine("6. Exit Program");
         }
 
         // Display the Prompt
@@ -304,23 +316,14 @@ namespace cis237_assignment_5
         // Get a string formatted as a header for items
         private string GetItemHeader()
         {
-            return String.Format(
-                "{0,-6} {1,-55} {2,-15} {3,6} {4,-6}",
-                "Id",
-                "Name",
-                "Pack",
-                "Price",
-                "Active"
-            ) +
-            Environment.NewLine +
-            String.Format(
-                "{0,-6} {1,-55} {2,-15} {3,6} {4,-6}",
-                new String('-', 6),
-                new String('-', 40),
-                new String('-', 15),
-                new String('-', 6),
-                new String('-', 5)
-            );
+            // Format the beverage header
+            return "Id Code:".PadRight(9)
+                 + "Beverage Name:".PadRight(100)
+                 + "Packaging:".PadRight(19)
+                 + "Price:".PadLeft(7) + "  " 
+                 + "Active Status:".PadRight(6) + Environment.NewLine
+                 + "".PadRight(151, '-');
+
         }
     }
 }
