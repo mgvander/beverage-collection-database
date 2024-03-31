@@ -23,11 +23,12 @@ namespace cis237_assignment_5
         //}
 
         // Add a new item to the collection
-        public void AddNewItem(string passId,
-                               string passName,
-                               string passPack,
-                               decimal passPrice,
-                               bool passActive)
+        // Return the success status of the beverage addition
+        public bool AddNewBeverage(string passId,
+                                   string passName,
+                                   string passPack,
+                                   decimal passPrice,
+                                   bool passActive)
         {
             // Add a new Beverage to the collection. Increase the Length variable.
             //beverages[beverageLength] = new Beverage(id, name, pack, price, active);
@@ -36,12 +37,73 @@ namespace cis237_assignment_5
             // Make a new instance of a beverage
             Beverage newBeverage = new Beverage();
 
+            // Has the beverage been added?
+            bool beverageAddedBool = false;
+
             // Set Id, name, packing, price, and activity
             newBeverage.Id = passId;
             newBeverage.Name = passName;
             newBeverage.Pack = passPack;
             newBeverage.Price = passPrice;
             newBeverage.Active = passActive;
+
+            // Try to add the beverage
+            try
+            {
+                // Add the new beverage to the beverage collection
+                beverageContext.Beverages.Add(newBeverage);
+
+                // Save changes to the beverage collection
+                beverageContext.SaveChanges();
+
+                // Beverage was added
+                beverageAddedBool = true;
+
+            }
+            // The beverage was not added (a beverage with the same Key Attribute already existing in the list
+            // could cause this)
+            catch
+            {
+                // The new beverage could not be added so it should be removed since it could not be saved
+                // It should not be left in suspension the next time a new beverage is being added and saved.
+                beverageContext.Remove(newBeverage);
+
+            }
+
+            // Return if the beverage was added
+            return beverageAddedBool;
+
+        }
+
+        /// <summary>
+        /// Delete the passed in Beverage from the database
+        /// </summary>
+        /// <param name="passKey"> The key attribute of the Beverage to be deleted </param>
+        /// <returns> The success state of the beverage being deleted </returns>
+        public bool DeleteBeverage(string passKey)
+        {
+            // Try to find and get the beverage from the collection
+            Beverage beverageToDelete = beverageContext.Beverages.Find(passKey);
+
+            // Has the beverage been added?
+            bool beverageDeletedBool = false;
+
+            // Check that a beverage with the passed in key exists in the collection
+            if (beverageToDelete != null)
+            {
+                // Remove the beverage from the collection
+                beverageContext.Beverages.Remove(beverageToDelete);
+
+                // Save changes to the beverage collection
+                beverageContext.SaveChanges();
+
+                // The beverage was deleted
+                beverageDeletedBool = true;
+
+            }
+
+            // Return if the beverage was deleted
+            return beverageDeletedBool;
 
         }
 

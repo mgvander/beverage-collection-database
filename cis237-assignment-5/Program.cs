@@ -15,25 +15,13 @@ namespace cis237_assignment_5
             //// Set Console Window Size
             //Console.BufferHeight = Int16.MaxValue - 1;
             //Console.WindowHeight = 40;
-            Console.WindowWidth = 151;            
-
-            //// Set a constant for the size of the collection
-            //const int beverageCollectionSize = 4000;
-
-            //// Number to exit the program
-            //const int exitInteger = 6;
-
-            //// Set a constant for the path to the CSV File
-            //const string pathToCSVFile = "../../../../datafiles/beverage_list.csv";
+            Console.WindowWidth = 151;
 
             // Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
             
             // Create an instance of the BeverageCollection class
             BeverageCollection beverageCollection = new BeverageCollection();
-
-            //// Create an instance of the CSVProcessor class
-            //CSVProcessor csvProcessor = new CSVProcessor();
 
             // Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -45,37 +33,11 @@ namespace cis237_assignment_5
             // Loop while the choice is not exit program
             while (choice != userInterface.MenuExitNumber)
             {
+                // Which choice did the user make from the menu
                 switch (choice)
                 {
                     // Display all items
                     case 1:
-                        //// Load the CSV File
-                        //bool success = csvProcessor.ImportCSV(beverageCollection, pathToCSVFile);
-                        //if (success)
-                        //{
-                        //    // Display Success Message
-                        //    userInterface.DisplayImportSuccess();
-                        //}
-                        //else
-                        //{
-                        //    // Display Fail Message
-                        //    userInterface.DisplayImportError();
-                        //}
-
-                        //// Print Entire List Of Items
-                        //string allItemsString = beverageCollection.ToString();
-
-                        //if (!String.IsNullOrWhiteSpace(allItemsString))
-                        //{
-                        //    // Display all of the items
-                        //    userInterface.DisplayAllItems(allItemsString);
-                        //}
-                        //else
-                        //{
-                        //    // Display error message for all items
-                        //    userInterface.DisplayAllItemsError();
-                        //}
-
                         // Create a string of the full item list
                         string allItemsString = beverageCollection.ToString();
 
@@ -97,20 +59,8 @@ namespace cis237_assignment_5
 
                     // Find an item from the list
                     case 2:
-                        //// Search For An Item
-                        //string searchQuery = userInterface.GetSearchQuery();
-                        //string itemInformation = beverageCollection.FindById(searchQueryString);
-                        //if (itemInformationString != null)
-                        //{
-                        //    userInterface.DisplayItemFound(itemInformationString);
-                        //}
-                        //else
-                        //{
-                        //    userInterface.DisplayItemFoundError();
-                        //}
-
                         // Get the Id the user wants
-                        string searchQueryString = userInterface.GetSearchQuery();
+                        string searchQueryString = userInterface.GetQuery("search for");
 
                         // Get item information
                         string itemInformationString = beverageCollection.FindById(searchQueryString);
@@ -140,15 +90,27 @@ namespace cis237_assignment_5
                         // Check that the item does not already exist in the database
                         if (beverageCollection.FindById(newItemInformation[0]) == null)
                         {
-                            // Add the new item to the database
-                            beverageCollection.AddNewItem(newItemInformation[0],
+                            // Add the new item to the database and get if this was successful
+                            bool beverageAddedBool = beverageCollection.AddNewBeverage(newItemInformation[0],
                                                           newItemInformation[1],
                                                           newItemInformation[2],
                                                           decimal.Parse(newItemInformation[3]),
                                                           (newItemInformation[4] == "True"));
 
-                            // Display success message
-                            userInterface.DisplayAddBeverageSuccess();
+                            // Check if the beverage was successfully added
+                            if (beverageAddedBool)
+                            {
+                                // Display success message
+                                userInterface.DisplayAddItemSuccess();
+
+                            }
+                            // The beverage was not added successfully
+                            else
+                            {
+                                // Display failure message
+                                userInterface.DisplayAddItemError();
+
+                            }                                                        
 
                         }
                         // The item's id was found to already exist in the database
@@ -163,13 +125,33 @@ namespace cis237_assignment_5
 
                     // Edit an item in the list
                     case 4:
-                        
+                        //
+
 
                         break;
 
                     // Delete an item from the list
                     case 5:
+                        // Get the Id the user wants to remove from the collection
+                        string deleteQueryString = userInterface.GetQuery("delete");
 
+                        // Remove the item from the database and get if this was successful
+                        bool beverageDeletedBool = beverageCollection.DeleteBeverage(deleteQueryString);
+
+                        // Check if the beverage was successfully deleted
+                        if (beverageDeletedBool)
+                        {
+                            // Display success message
+                            userInterface.DisplayDeleteItemSuccess();
+
+                        }
+                        // The beverage was not deleted successfully
+                        else
+                        {
+                            // Display failure message
+                            userInterface.DisplayDeleteItemError();
+
+                        }
 
                         break;
 

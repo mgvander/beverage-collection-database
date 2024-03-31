@@ -8,6 +8,7 @@ namespace cis237_assignment_5
 {
     class UserInterface
     {
+        // The number of choices in the main menu
         private const int MAX_MENU_CHOICES = 6;
 
         /********************************************************************************
@@ -60,10 +61,10 @@ namespace cis237_assignment_5
         }
 
         // Get the search query from the user
-        public string GetSearchQuery()
+        public string GetQuery(string passField)
         {
             Console.WriteLine();
-            Console.WriteLine("What Id would you like to search for?");
+            Console.WriteLine($"What Item Id would you like to {passField}?");
             Console.Write("> ");
             return Console.ReadLine();
         }
@@ -71,32 +72,52 @@ namespace cis237_assignment_5
         // Get New Item Information From The User.
         public string[] GetNewItemInformation()
         {
+            //
             string id = this.GetStringField("Id");
+
+            //
+            string[] dataFields = this.GetExistingItemInformaion();
+
+            //
+            string name = ;
+            string pack = ;
+            string price = ;
+            string active = ;
+
+            return new string[] { id, name, pack, price, active };
+
+        }
+
+        public string[] GetExistingItemInformaion()
+        {
+            // Get and set Beverage data fields fromt he user
             string name = this.GetStringField("Name");
             string pack = this.GetStringField("Pack");
             string price = this.GetDecimalField("Price");
             string active = this.GetBoolField("Active");
 
-            return new string[] { id, name, pack, price, active };
+            //
+            return new string[] { name, pack, price, active};
+
         }
 
         // Display Import Success
-        public void DisplayImportSuccess()
-        {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Wine List Has Been Imported Successfully");
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
+        //public void DisplayImportSuccess()
+        //{
+        //    Console.WriteLine();
+        //    Console.ForegroundColor = ConsoleColor.Green;
+        //    Console.WriteLine("Wine List Has Been Imported Successfully");
+        //    Console.ForegroundColor = ConsoleColor.Gray;
+        //}
 
         // Display Import Error
-        public void DisplayImportError()
-        {
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("There was an error importing the CSV");
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
+        //public void DisplayImportError()
+        //{
+        //    Console.WriteLine();
+        //    Console.ForegroundColor = ConsoleColor.Red;
+        //    Console.WriteLine("There was an error importing the CSV");
+        //    Console.ForegroundColor = ConsoleColor.Gray;
+        //}
 
         // Display All Items
         public void DisplayAllItems(string allItemsOutput)
@@ -139,17 +160,29 @@ namespace cis237_assignment_5
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("A Match was not found");
+            Console.WriteLine("A Match Was Not Found");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        // Display Add Beverage Item Success
-        public void DisplayAddBeverageSuccess()
+        // Display Add Item Success
+        public void DisplayAddItemSuccess()
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("The Item was successfully added");
+            Console.WriteLine("The item was successfully added");
             Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        /// <summary>
+        /// Display Add Item Error Message
+        /// </summary>
+        public void DisplayAddItemError()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("The Item Couldn't Be Added");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
 
         // Display Item Already Exists Error
@@ -159,6 +192,32 @@ namespace cis237_assignment_5
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("An Item With That Id Already Exists");
             Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        /// <summary>
+        /// Display Delete Item Success Message
+        /// </summary>
+        public void DisplayDeleteItemSuccess()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("The item was successfully deleted");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+        }
+
+        /// <summary>
+        /// Display Delete Item Error Message
+        /// </summary>
+        public void DisplayDeleteItemError()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("The Item Couldn't Be Deleted");
+            Console.WriteLine();
+            Console.WriteLine("Check that the item exists in the database");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
 
         /*
@@ -234,7 +293,7 @@ namespace cis237_assignment_5
         // Get a valid string field from the console
         private string GetStringField(string fieldName)
         {
-            Console.WriteLine("What is the new Item's {0}", fieldName);
+            Console.WriteLine("What is the Item's {0}", fieldName);
             string value = null;
             bool valid = false;
             while (!valid)
@@ -260,7 +319,7 @@ namespace cis237_assignment_5
         // Get a valid decimal field from the console
         private string GetDecimalField(string fieldName)
         {
-            Console.WriteLine("What is the new Item's {0}", fieldName);
+            Console.WriteLine("What is the Item's {0}", fieldName);
             decimal value = 0;
             bool valid = false;
             while (!valid)
