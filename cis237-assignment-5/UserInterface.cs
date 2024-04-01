@@ -72,32 +72,74 @@ namespace cis237_assignment_5
         // Get New Item Information From The User.
         public string[] GetNewItemInformation()
         {
-            //
-            string id = this.GetStringField("Id");
-
-            //
-            string[] dataFields = this.GetExistingItemInformaion();
-
-            //
-            string name = ;
-            string pack = ;
-            string price = ;
-            string active = ;
-
-            return new string[] { id, name, pack, price, active };
-
-        }
-
-        public string[] GetExistingItemInformaion()
-        {
             // Get and set Beverage data fields fromt he user
             string name = this.GetStringField("Name");
             string pack = this.GetStringField("Pack");
             string price = this.GetDecimalField("Price");
             string active = this.GetBoolField("Active");
+            
+            // Return a string array of the Beverage's data fields
+            return new string[] { name, pack, price, active };
 
-            //
-            return new string[] { name, pack, price, active};
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetEditedInformation()
+        {
+            // Beverage data fields
+            string nameString = "";
+            string packString = "";
+            string priceString = "";
+            string activeString = "";
+
+            // Get the editing conformation for the Beverage's
+            bool editNameBool = this.GetEditQuery("Name");
+
+            // Does the user want to edit the name
+            if (editNameBool)
+            {
+                // Get the new name
+                nameString = this.GetStringField("Name");
+
+            }
+
+            // Get the editing conformation for the Beverage's
+            bool editPackBool = this.GetEditQuery("Pack");
+
+            // Does the user want to edit the pack
+            if (editPackBool)
+            {
+                // Get the new pack
+                packString = this.GetStringField("Pack");
+
+            }
+
+            // Get the editing conformation for the Beverage's
+            bool editPriceBool = this.GetEditQuery("Price");
+
+            // Does the user want to edit the price
+            if (editPriceBool)
+            {
+                // Get the new price
+                priceString = this.GetDecimalField("Price");
+
+            }
+
+            // Get the editing conformation for the Beverage's
+            bool editActiveBool = this.GetEditQuery("Active Status");
+
+            // Does the user want to edit the active status
+            if (editActiveBool)
+            {
+                // Get the new active status
+                activeString = this.GetBoolField("Active");
+
+            }
+
+            return new string[] { nameString, packString, priceString, activeString};
 
         }
 
@@ -160,7 +202,7 @@ namespace cis237_assignment_5
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("A Match Was Not Found");
+            Console.WriteLine("The Item Was Not Found");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
@@ -195,6 +237,27 @@ namespace cis237_assignment_5
         }
 
         /// <summary>
+        /// Display Edit Item Success Message
+        /// </summary>
+        public void DisplayEditItemSuccess()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("All item changes have been been saved");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+        }
+
+        public void DisplayEditItemError()
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("The Item Couldn't Be Changed");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
+        }
+
+        /// <summary>
         /// Display Delete Item Success Message
         /// </summary>
         public void DisplayDeleteItemSuccess()
@@ -214,8 +277,6 @@ namespace cis237_assignment_5
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("The Item Couldn't Be Deleted");
-            Console.WriteLine();
-            Console.WriteLine("Check that the item exists in the database");
             Console.ForegroundColor = ConsoleColor.Gray;
 
         }
@@ -253,6 +314,8 @@ namespace cis237_assignment_5
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("That is not a valid option. Please make a valid choice");
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
 
         // Get the selection from the user
@@ -320,6 +383,7 @@ namespace cis237_assignment_5
         private string GetDecimalField(string fieldName)
         {
             Console.WriteLine("What is the Item's {0}", fieldName);
+            Console.Write("> $");
             decimal value = 0;
             bool valid = false;
             while (!valid)
@@ -336,7 +400,7 @@ namespace cis237_assignment_5
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine();
                     Console.WriteLine("What is the new Item's {0}", fieldName);
-                    Console.Write("> ");
+                    Console.Write("> $");
                 }
             }
 
@@ -346,7 +410,7 @@ namespace cis237_assignment_5
         // Get a valid bool field from the console
         private string GetBoolField(string fieldName)
         {
-            Console.WriteLine("Should the Item be {0} (y/n)", fieldName);
+            Console.WriteLine("Should the Item be {0}? (y/n)", fieldName);
             string input = null;
             bool value = false;
             bool valid = false;
@@ -370,6 +434,57 @@ namespace cis237_assignment_5
             }
 
             return value.ToString();
+        }
+
+        private bool GetEditQuery(string passfieldNameString)
+        {
+            // User's input
+            string inputString = null;
+
+            // Should the data field be edited
+            bool valueBool = false;
+
+            // Is the user's input a valid response
+            bool validBool = false;
+
+            // Display prompt
+            Console.WriteLine($"Would you like to change the item's {passfieldNameString}? (y/n)");
+
+            // Loop while the user's input is not valid
+            while (!validBool)
+            {
+                // Get user's input
+                inputString = Console.ReadLine();
+
+                // Check for one of the two valid inputs
+                if (inputString.ToLower() == "y" || inputString.ToLower() == "n")
+                {
+                    // The input was valid
+                    validBool = true;
+
+                    // Convert y/n to true/false
+                    valueBool = (inputString.ToLower() == "y");
+
+                }
+                // The user's input was not valid
+                else
+                {
+                    // Display the error message
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("That is not a valid Entry.");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine();
+
+                    // Display prompt
+                    Console.WriteLine($"Would you like to change the item's {passfieldNameString}? (y/n)");
+
+                }
+
+            }
+
+            // Return boolean value
+            return valueBool;
+
         }
 
         // Get a string formatted as a header for items

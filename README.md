@@ -84,4 +84,4 @@ All source code written before March 24, 2024 was provided by David Barnes.
 
 ## Known Problems, Issues, And/Or Errors in the Program
 
-The options are displayed in the menu, but beverages cannot be updated or removed yet.
+None

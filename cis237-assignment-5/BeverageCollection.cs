@@ -4,36 +4,22 @@
 
 using cis237_assignment_5.Models;
 using System;
+using System.Data.SqlTypes;
 
 namespace cis237_assignment_5
 {
     class BeverageCollection
     {
-        // Private Variables
-        //private Beverage[] beverages;
-        //private int beverageLength;
-
         private BeverageContext beverageContext = new BeverageContext();
-
-        //// Constructor. Must pass the size of the collection.
-        //public BeverageCollection(int size)
-        //{
-        //    this.beverages = new Beverage[size];
-        //    this.beverageLength = 0;
-        //}
 
         // Add a new item to the collection
         // Return the success status of the beverage addition
-        public bool AddNewBeverage(string passId,
-                                   string passName,
-                                   string passPack,
-                                   decimal passPrice,
-                                   bool passActive)
+        public bool AddNewBeverage(string passIdString,
+                                   string passNameString,
+                                   string passPackString,
+                                   decimal passPriceDecimal,
+                                   bool passActiveBool)
         {
-            // Add a new Beverage to the collection. Increase the Length variable.
-            //beverages[beverageLength] = new Beverage(id, name, pack, price, active);
-            //beverageLength++;
-
             // Make a new instance of a beverage
             Beverage newBeverage = new Beverage();
 
@@ -41,11 +27,11 @@ namespace cis237_assignment_5
             bool beverageAddedBool = false;
 
             // Set Id, name, packing, price, and activity
-            newBeverage.Id = passId;
-            newBeverage.Name = passName;
-            newBeverage.Pack = passPack;
-            newBeverage.Price = passPrice;
-            newBeverage.Active = passActive;
+            newBeverage.Id = passIdString;
+            newBeverage.Name = passNameString;
+            newBeverage.Pack = passPackString;
+            newBeverage.Price = passPriceDecimal;
+            newBeverage.Active = passActiveBool;
 
             // Try to add the beverage
             try
@@ -72,6 +58,98 @@ namespace cis237_assignment_5
 
             // Return if the beverage was added
             return beverageAddedBool;
+
+        }
+
+        /// <summary>
+        /// Change the data stored in a Beverage's properties: Name, Pack, Price, and/or Active.
+        /// Passed strings of null, empty, or only white-space characters, do not replace a Beverage property's set value.
+        /// </summary>
+        /// <param name="passIdString"> Beverage Id </param>
+        /// <param name="passNameString"> Beverage Name </param>
+        /// <param name="passPackString"> Beverage Pack </param>
+        /// <param name="passPriceString"> Beverage Price </param>
+        /// <param name="passActiveString"> Beverage Active </param>
+        /// <returns> True if all updates are successfully saved </returns>
+        public bool EditBeverage(string passIdString,
+                                 string passNameString,
+                                 string passPackString,
+                                 string passPriceString,
+                                 string passActiveString)
+        {
+            // Try to find and get the beverage from the collection
+            Beverage beverageToEdit = beverageContext.Beverages.Find(passIdString);
+
+            // Has the beverage been edited
+            bool beverageEditedBool = false;
+
+            // Check that a beverage with the passed in key exists in the collection
+            if (beverageToEdit != null)
+            {
+                // Check for a new name
+                if (!String.IsNullOrWhiteSpace(passNameString))
+                {
+                    // Set the new name
+                    beverageToEdit.Name = passNameString;
+
+                }
+
+                // Check for a new pack
+                if (!String.IsNullOrWhiteSpace(passPackString))
+                {
+                    // Set the new pack
+                    beverageToEdit.Pack = passPackString;
+
+                }
+
+                // Check for a new price
+                if (!String.IsNullOrWhiteSpace(passPriceString))
+                {
+                    // Try to set the new price
+                    try
+                    {
+                        // Set the new price
+                        beverageToEdit.Price = decimal.Parse(passPriceString);
+
+                    }
+                    catch
+                    {
+                        // The string was not converted to decimal type
+                        return beverageEditedBool;
+
+                    }
+
+                }
+
+                // Check for a new active status
+                if (!String.IsNullOrWhiteSpace(passActiveString))
+                {
+                    // Check that the string represents a bollean value
+                    if (passActiveString == "True" || passActiveString == "False")
+                    {
+                        // Set the new active status
+                        beverageToEdit.Active = (passActiveString == "True");
+
+                    }
+                    else
+                    {
+                        // The string did not represent a bollean value
+                        return beverageEditedBool;
+
+                    }
+
+                }
+
+                // Save changes to the beverage collection
+                beverageContext.SaveChanges();
+
+                // All data was updated
+                beverageEditedBool = true;
+
+            }
+
+            //
+            return beverageEditedBool;
 
         }
 
@@ -113,16 +191,6 @@ namespace cis237_assignment_5
             // Declare a return string
             string returnString = "";
 
-            //// Loop through all of the beverages
-            //foreach (Beverage beverage in beverages)
-            //{
-            //    // If the current beverage is not null, concat it to the return string
-            //    if (beverage != null)
-            //    {
-            //        returnString += beverage.ToString() + Environment.NewLine;
-            //    }
-            //}
-
             // Loop through each beverage in the database
             foreach (Beverage beverage in beverageContext.Beverages)
             {
@@ -141,26 +209,10 @@ namespace cis237_assignment_5
         }
 
         // Find an item by it's Id
-        public string FindById(string passId)
+        public string FindBeverageInformationById(string passId)
         {
             // Declare return string for the possible found item
             string returnString = null;
-
-            //// For each Beverage in beverages
-            //foreach (Beverage beverage in beverages)
-            //{
-            //    // If the beverage is not null
-            //    if (beverage != null)
-            //    {
-            //        // If the beverage Id is the same as the search Id
-            //        if (beverage.Id == id)
-            //        {
-            //            // Set the return string to the result
-            //            // of the beverage's ToString method.
-            //            returnString = beverage.ToString();
-            //        }
-            //    }
-            //}
 
             // Get the beverage with the passed in Id or return null if not found
             Beverage beverage = beverageContext.Beverages.Find(passId);
@@ -185,13 +237,7 @@ namespace cis237_assignment_5
         /// <returns> Concatenated string </returns>
         private string BeverageToString(Beverage passBeverage)
         {
-            // Concatenate the data points of a beverage into a line
-            //return passBeverage.Id.PadRight(9) + 
-            //       passBeverage.Name.PadRight(57) + 
-            //       passBeverage.Pack.PadRight(18) + 
-            //       passBeverage.Price.ToString("c").PadLeft(7) + 
-            //       passBeverage.Active.ToString().PadRight(6) + Environment.NewLine;
-
+            // Concatenated string of Beverage data fields
             return passBeverage.Id.PadRight(9) +
                    passBeverage.Name +
                    passBeverage.Pack +

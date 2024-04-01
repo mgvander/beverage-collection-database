@@ -5,6 +5,7 @@
 using cis237_assignment_5.Models;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace cis237_assignment_5
 {
@@ -63,7 +64,7 @@ namespace cis237_assignment_5
                         string searchQueryString = userInterface.GetQuery("search for");
 
                         // Get item information
-                        string itemInformationString = beverageCollection.FindById(searchQueryString);
+                        string itemInformationString = beverageCollection.FindBeverageInformationById(searchQueryString);
 
                         // Check that the item was found
                         if (itemInformationString != null)
@@ -72,7 +73,7 @@ namespace cis237_assignment_5
                             userInterface.DisplayItemFound(itemInformationString);
 
                         }
-                        // Item was not found
+                        // Item was not found in the collection
                         else
                         {
                             // Display item not not found error
@@ -84,18 +85,21 @@ namespace cis237_assignment_5
 
                     // Add an item to the list
                     case 3:
-                        // Get new item information and set it as elements in an array of strings
-                        string[] newItemInformation = userInterface.GetNewItemInformation();
+                        // Get the Id the user wants
+                        string additionQueryString = userInterface.GetQuery("add");                        
 
                         // Check that the item does not already exist in the database
-                        if (beverageCollection.FindById(newItemInformation[0]) == null)
+                        if (beverageCollection.FindBeverageInformationById(additionQueryString) == null)
                         {
-                            // Add the new item to the database and get if this was successful
-                            bool beverageAddedBool = beverageCollection.AddNewBeverage(newItemInformation[0],
-                                                          newItemInformation[1],
-                                                          newItemInformation[2],
-                                                          decimal.Parse(newItemInformation[3]),
-                                                          (newItemInformation[4] == "True"));
+                            // Get new item information and set it as elements in an array of strings
+                            string[] newItemInformation = userInterface.GetNewItemInformation();
+
+                            // Add the new beverage to the database and get if this was successful
+                            bool beverageAddedBool = beverageCollection.AddNewBeverage(additionQueryString,
+                                                                                       newItemInformation[0],
+                                                                                       newItemInformation[1],
+                                                                                       decimal.Parse(newItemInformation[2]),
+                                                                                       (newItemInformation[3] == "True"));
 
                             // Check if the beverage was successfully added
                             if (beverageAddedBool)
@@ -125,8 +129,45 @@ namespace cis237_assignment_5
 
                     // Edit an item in the list
                     case 4:
-                        //
+                        // Get the Id the user wants
+                        string editQueryString = userInterface.GetQuery("edit");
 
+                        // Check that item exists in the database
+                        if (beverageCollection.FindBeverageInformationById(editQueryString) != null)
+                        {
+                            // Get conformations on which attributes the user will edit
+                            string[] editedItemInformtion = userInterface.GetEditedInformation();
+
+                            // Edit the beverage in the database and get if this was successful
+                            bool beverageEditedBool = beverageCollection.EditBeverage(editQueryString,
+                                                                                      editedItemInformtion[0],
+                                                                                      editedItemInformtion[1],
+                                                                                      editedItemInformtion[2],
+                                                                                      editedItemInformtion[3]);
+
+                            // Check that the beverage was successfully edited
+                            if (beverageEditedBool)
+                            {
+                                // Display success message
+                                userInterface.DisplayEditItemSuccess();
+
+                            }
+                            //
+                            else
+                            {
+                                // Display failure message
+                                userInterface.DisplayEditItemError();
+
+                            }
+
+                        }
+                        // Item was not found in the collection
+                        else
+                        {
+                            // Display item not not found error
+                            userInterface.DisplayItemFoundError();
+
+                        }
 
                         break;
 
@@ -135,21 +176,33 @@ namespace cis237_assignment_5
                         // Get the Id the user wants to remove from the collection
                         string deleteQueryString = userInterface.GetQuery("delete");
 
-                        // Remove the item from the database and get if this was successful
-                        bool beverageDeletedBool = beverageCollection.DeleteBeverage(deleteQueryString);
-
-                        // Check if the beverage was successfully deleted
-                        if (beverageDeletedBool)
+                        // Check that item exists in the database
+                        if (beverageCollection.FindBeverageInformationById(deleteQueryString) != null)
                         {
-                            // Display success message
-                            userInterface.DisplayDeleteItemSuccess();
+                            // Remove the item from the database and get if this was successful
+                            bool beverageDeletedBool = beverageCollection.DeleteBeverage(deleteQueryString);
+
+                            // Check if the beverage was successfully deleted
+                            if (beverageDeletedBool)
+                            {
+                                // Display success message
+                                userInterface.DisplayDeleteItemSuccess();
+
+                            }
+                            // The beverage was not deleted successfully
+                            else
+                            {
+                                // Display failure message
+                                userInterface.DisplayDeleteItemError();
+
+                            }
 
                         }
-                        // The beverage was not deleted successfully
+                        // Item was not found in the collection
                         else
                         {
-                            // Display failure message
-                            userInterface.DisplayDeleteItemError();
+                            // Display item not not found error
+                            userInterface.DisplayItemFoundError();
 
                         }
 
